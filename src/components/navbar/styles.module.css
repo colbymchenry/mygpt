@@ -1,0 +1,15 @@
+:global(.dark) .nav {
+    /* @apply border-[var(--border)]; */
+}
+
+.nav {
+    @apply sticky top-0 left-0 w-screen py-3;
+}
+
+.nav a {
+    @apply text-[var(--card-foreground)];
+}
+
+.logo {
+    @apply h-[2rem];
+}
