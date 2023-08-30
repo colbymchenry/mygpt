@@ -22,11 +22,7 @@ export default function Navbar() {
 
     const renderRoutes = () => {
         return <>
-            {renderRoute("/users", "Users")}
-            {renderRoute("/providers", "Providers")}
-            {renderRoute("/services", "Services")}
-            {renderRoute("/reports", "Reports")}
-            {renderRoute("/marketing", "Marketing")}
+
         </>
     }
 
@@ -50,7 +46,7 @@ export default function Navbar() {
                         </div>
 
                         {/* Logo that links to /app */}
-                        <Link href={"/app"} className="flex items-center gap-3 mr-4">
+                        <Link href={"/"} className="flex items-center gap-3 mr-4">
                             <img src={"/images/logo.png"} alt="Logo" className={`${styles.logo}`} />
                             <h5 className="font-extrabold">{process.env.NEXT_PUBLIC_APP_NAME}</h5>
                         </Link>
@@ -92,7 +88,7 @@ export default function Navbar() {
             <SheetContent side={"left"} className="flex flex-col">
                 <SheetHeader>
                     <SheetTitle>
-                        <Link href={"/app"} className="flex items-center gap-3 mr-4">
+                        <Link href={"/"} className="flex items-center gap-3 mr-4">
                             <img src={"/images/logo.png"} alt="Logo" className={`${styles.logo}`} />
                             <h5 className="font-extrabold">{process.env.NEXT_PUBLIC_APP_NAME}</h5>
                         </Link>
