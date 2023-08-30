@@ -88,7 +88,7 @@
     -webkit-text-size-adjust: 100%;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground max-w-[100vw] overflow-x-hidden;
   }
 }
 
