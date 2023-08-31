@@ -39,7 +39,7 @@ const GPTSlide = ({ id }: { id?: string; }) => {
                     <div className="flex flex-col mb-4">
                         <div className="flex flex-col text-sm gap-2">
                             <span><strong>user</strong>: You/who is asking</span>
-                            <span><strong>assistant</strong>: Give example replies to your ("user" role) questions.</span>
+                            <span><strong>assistant</strong>: Give example replies to your (&quot;user&quot; role) questions.</span>
                             <span><strong>system</strong>: Internally give some instructions for the conversation.</span>
                         </div>
                     </div>

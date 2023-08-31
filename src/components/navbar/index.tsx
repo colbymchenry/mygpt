@@ -22,7 +22,7 @@ export default function Navbar() {
 
     const renderRoutes = () => {
         return <>
-
+            {renderRoute("/builder", "Bot Builder")}
         </>
     }
 
@@ -98,7 +98,7 @@ export default function Navbar() {
                     {renderRoutes()}
                 </div>
                 <SheetFooter className="sticky bottom-0 left-0">
-                    <small className="text-xs dark:text-gray-400">© 2023, PartsHero Created by Colby McHenry</small>
+                    <small className="text-xs dark:text-gray-400">© 2023, MyGPT Created by Colby McHenry</small>
                 </SheetFooter>
             </SheetContent>
         </Sheet>

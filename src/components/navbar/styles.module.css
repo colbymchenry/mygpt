@@ -3,7 +3,7 @@
 }
 
 .nav {
-    @apply sticky top-0 left-0 w-screen py-3;
+    @apply sticky top-0 left-0 w-screen py-3 z-30;
 }
 
 .nav a {
