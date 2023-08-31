@@ -1,21 +1,41 @@
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
-import { useFirebase } from "@/contexts/FirebaseContext";
+import { FirebaseUtils, useFirebase } from "@/contexts/FirebaseContext";
 import { GPTMessage } from "@/lib/chatgpt";
 import { array_move } from "@/lib/utils";
-import { ChevronDown, ChevronUp, PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { Label } from "@radix-ui/react-label";
+import { CheckIcon, ChevronDown, ChevronUp, Loader2, PlayIcon, PlusIcon, SaveIcon } from "lucide-react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 const Builder = () => {
+
+    const router = useRouter();
+    const { user } = useFirebase();
     const [messages, setMessages] = useState<GPTMessage[]>([{
         role: 'system',
         content: ''
     }]);
-    const [working, setWorking] = useState<boolean>(false);
-    const { firestore } = useFirebase();
 
+    const init = async () => {
+        try {
+            if (user?.uid) {
+                const data: any = await FirebaseUtils.getDocument("settings", user.uid);
+                if (!data?.apiKey) router.push('/settings');
+            }
+        } catch (error) {
+            toast.error(`Error loading settings from server...`);
+            console.error(error);
+        }
+    }
 
+    useEffect(() => {
+        init();
+    }, []);
 
     const addMessage = () => setMessages((messages: GPTMessage[]) => [...messages, {
         role: 'system',
@@ -40,16 +60,22 @@ const Builder = () => {
 
     return (
         <div className="flex flex-col">
+            <div className="flex flex-col text-sm gap-2 mb-4">
+                <span><strong>assistant</strong>: Give example replies to your questions.</span>
+                <span><strong>system</strong>: Internally give some instructions for the conversation.</span>
+            </div>
             {messages.map((msg: GPTMessage, index: number) => {
                 return (
                     <>
                         <Message key={`message-${index}`} message={msg} index={index} moveUp={moveUp} moveDown={moveDown} updateMessage={updateMessage} addMessage={addMessage} />
                         {index > -1 && index < messages.length - 1 ? <Connector /> : null}
-
                     </>
                 )
             })}
-            <Button type="button" onClick={addMessage} className="mt-10"><PlusIcon width={"1rem"} /> Add Message</Button>
+            <div className="flex md:flex-row flex-col items-stretch justify-end gap-4 mt-10">
+                <Button type="button" onClick={addMessage} className="flex items-center gap-2"><PlusIcon width={"1rem"} /> Add Message</Button>
+                <SaveDialog messages={messages} />
+            </div>
         </div>
     );
 
@@ -75,7 +101,6 @@ const Message = ({ message, index, moveUp, moveDown, updateMessage, addMessage }
                                 <SelectLabel>Roles</SelectLabel>
                                 <SelectItem value="system">system</SelectItem>
                                 <SelectItem value="assistant">assistant</SelectItem>
-                                <SelectItem value="user">user</SelectItem>
                             </SelectGroup>
                         </SelectContent>
                     </Select>
@@ -90,7 +115,7 @@ const Message = ({ message, index, moveUp, moveDown, updateMessage, addMessage }
 
             <div className="flex flex-col">
                 {/* Textarea for message content */}
-                <Textarea placeholder={message.role === 'system' ? 'Ex: You are an assistant that speaks like Shakespeare.' : message.role === 'user' ? 'Ex: tell me a joke' : 'Ex: why did the chicken cross the road'}
+                <Textarea placeholder={message.role === 'system' ? 'Ex: You are an assistant that speaks like Shakespeare.' : 'Ex: To be, or not to be: that is the question.'}
                     value={message.content}
                     className={`dark:bg-gray-800`}
                     style={{ fontSize: "16px" }}
@@ -109,6 +134,66 @@ const Connector = () => {
                 <span className="relative inline-flex rounded-full h-5 w-5 bg-sky-500"></span>
             </span>
         </div>
+    )
+}
+
+const SaveDialog = ({ messages }: { messages: GPTMessage[] }) => {
+    const router = useRouter();
+    const [working, setWorking] = useState<boolean>(false);
+    const [name, setName] = useState<string>("");
+    const [description, setDescription] = useState<string>("");
+
+    const saveForm = async () => {
+        if (working) return;
+        setWorking(true);
+
+        try {
+            await FirebaseUtils.createDocument("bots", {
+                messages,
+                name,
+                description
+            });
+            toast.success('Bot configuration saved successfully!');
+            router.push('/');
+        } catch (error) {
+            console.error(error);
+        }
+
+        setWorking(false);
+    }
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>
+                <Button type="button" variant="secondary" className="flex items-center gap-2"><SaveIcon width={"1rem"} /> Save</Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                    <DialogTitle>Save bot</DialogTitle>
+                    <DialogDescription>
+                        Confirm your bots name and description.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="grid gap-4 py-4">
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="name" className="text-right">
+                            Name
+                        </Label>
+                        <Input id="name" placeholder="Shakespeare" className="col-span-3" value={name} onChange={(e) => setName(e.target.value)} />
+                    </div>
+                    <div className="grid grid-cols-4 items-center gap-4">
+                        <Label htmlFor="description" className="text-right">
+                            Description
+                        </Label>
+                        <Input id="description" placeholder="A bot that talks like Shakespeare..." className="col-span-3" value={description} onChange={(e) => setDescription(e.target.value)} />
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button disabled={working || messages.length < 1 || messages.filter((msg: GPTMessage) => msg.content.replace(/\s/g, '').length < 25).length > 0}
+                        onClick={saveForm} type="button" variant="secondary" className="flex items-center gap-2">{working ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckIcon width={"1rem"} />} Confirm</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
     )
 }
 

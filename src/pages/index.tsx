@@ -5,7 +5,6 @@ import { PlusIcon } from "lucide-react";
 import Link from "next/link";
 
 const Home = () => {
-
   return (
     <div className="flex flex-col w-full gap-6 md:gap-12">
       <div className="flex flex-col md:flex-row w-full items-stretch justify-between gap-3">

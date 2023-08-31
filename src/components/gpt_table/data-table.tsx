@@ -16,6 +16,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { columns } from "./columns"
+import { useEffect, useState } from "react"
+import { toast } from "sonner"
+import { FirebaseUtils } from "@/contexts/FirebaseContext"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -81,5 +84,21 @@ export function DataTable<TData, TValue>({
 }
 
 export default function GPTTable() {
-  return <DataTable columns={columns} data={[]} />
+  const [data, setData] = useState<any[]>([]);
+
+  const init = async () => {
+    try {
+      let d = await FirebaseUtils.getCollectionData("bots");
+      setData(d);
+    } catch (error) {
+      console.error(error);
+      toast.error("Error loading bots.");
+    }
+  }
+
+  useEffect(() => {
+    init();
+  }, [])
+
+  return <DataTable columns={columns} data={data} />
 }
