@@ -19,6 +19,7 @@ import { columns } from "./columns"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { FirebaseUtils } from "@/contexts/FirebaseContext"
+import { useRouter } from "next/router"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -85,10 +86,15 @@ export function DataTable<TData, TValue>({
 
 export default function GPTTable() {
   const [data, setData] = useState<any[]>([]);
+  const router = useRouter();
 
   const init = async () => {
     try {
       let d = await FirebaseUtils.getCollectionData("bots");
+      if (d.length) {
+        d[0].router = router;
+        d[0].init = init;
+      }
       setData(d);
     } catch (error) {
       console.error(error);

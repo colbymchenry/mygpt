@@ -166,7 +166,7 @@ li[data-type="error"] {
 }
 
 .msg {
-  @apply p-2 rounded-md shadow-sm max-w-[80%] md:max-w-[60%] ;
+  @apply px-2 rounded-md shadow-sm max-w-[80%] md:max-w-[60%] ;
 }
 
 .msg.user {
@@ -175,4 +175,20 @@ li[data-type="error"] {
 
 .msg.bot {
   @apply bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 self-start;
+}
+
+.msg table {
+  @apply border border-solid border-gray-500 dark:border-gray-100 bg-white dark:bg-black w-[90%];
+}
+
+.msg table tr {
+  @apply border border-solid border-gray-500 dark:border-gray-100 w-[90%];
+}
+
+.msg pre {
+  @apply bg-black p-2 text-white rounded-md;
+}
+
+.msg p {
+  @apply my-2;
 }

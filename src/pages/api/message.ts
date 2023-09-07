@@ -12,11 +12,8 @@ export default async function handler(
   const apiKey = body.apiKey;
   const prompt = body.message;
 
-  console.log(prompts)
-
   const gpt = new ChatGPT(prompts, apiKey);
   const resp = await gpt.askQuestion(prompt);
-  console.log(resp);
 
   res.status(200).json({
     messages: [...body.messages, {

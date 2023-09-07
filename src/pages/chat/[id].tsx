@@ -7,6 +7,9 @@ import { Loader2, SendHorizonal } from "lucide-react";
 import { toast } from "sonner";
 import { useApi } from "@/contexts/ApiContext";
 import { TypeAnimation } from 'react-type-animation';
+import ReactMarkdown from 'react-markdown'
+import remarkGfm from 'remark-gfm';
+import remarkSlug from 'rehype-slug';
 
 type Message = {
     content: string;
@@ -88,13 +91,9 @@ const ChatRoom = () => {
             {messages.map((msg: Message, index: number) => {
                 return (
                     <div key={`message-${index}`} className={`msg ${msg.role === 'user' ? `user` : `bot`}`}>
-                        {index === messages.length - 1 && msg.role !== 'user' ? <TypeAnimation
-                            sequence={[
-                                msg.content
-                            ]}
-                            wrapper="span"
-                            speed={99}
-                        /> : msg.content}
+                        <ReactMarkdown remarkPlugins={[remarkGfm, remarkSlug]}>
+                            {msg.content}
+                        </ReactMarkdown>
                     </div>
                 )
             })}

@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "../ui/button";
 import { MessagesSquare, MoreHorizontal, PencilIcon, Trash } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
-import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { FirebaseUtils } from "@/contexts/FirebaseContext";
 
@@ -30,12 +29,14 @@ export const columns: ColumnDef<BotRow>[] = [
     accessorKey: "controls",
     header: "",
     cell: ({ row, cell, table }) => {
-      const router = useRouter();
+      const router = table.getRow("0").original.router;
+      const init = table.getRow("0").original.init;
 
       async function deleteBot(id: string) {
         try {
           await FirebaseUtils.deleteDocument("bots", id);
-          toast.success("Bot deleted.")
+          toast.success("Bot deleted.");
+          init();
         } catch (error) {
           console.error(error);
           toast.error("Unable to delete bot.");
