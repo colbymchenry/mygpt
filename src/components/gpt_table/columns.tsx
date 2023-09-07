@@ -29,8 +29,9 @@ export const columns: ColumnDef<BotRow>[] = [
     accessorKey: "controls",
     header: "",
     cell: ({ row, cell, table }) => {
-      const router = table.getRow("0").original.router;
-      const init = table.getRow("0").original.init;
+      const firstRow: any = table.getRow("0")?.original;
+      const router = firstRow.router;
+      const init = firstRow.init;
 
       async function deleteBot(id: string) {
         try {
