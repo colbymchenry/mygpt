@@ -17,10 +17,12 @@ export const columns: ColumnDef<BotRow>[] = [
   {
     accessorKey: "name",
     header: "Name",
-  },
-  {
-    accessorKey: "description",
-    header: "Description",
+    cell: ({ row, cell, table }) => {
+      return <div className="flex flex-col">
+        <span>{row.original.name}</span>
+        <span className="text-xs text-gray-500 truncate max-w-[10rem] sm:max-w-[24rem] md:max-w-[34rem] lg:max-w-[50rem]">{row.original.description}</span>
+      </div>
+    }
   },
   {
     accessorKey: "controls",

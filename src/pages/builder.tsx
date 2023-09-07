@@ -9,14 +9,14 @@ import { array_move } from "@/lib/utils";
 import { Label } from "@radix-ui/react-label";
 import { CheckIcon, ChevronDown, ChevronUp, Loader2, PlayIcon, PlusIcon, SaveIcon } from "lucide-react";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
-const Builder = () => {
+const Builder = (props: any) => {
 
     const router = useRouter();
     const { user } = useFirebase();
-    const [messages, setMessages] = useState<GPTMessage[]>([{
+    const [messages, setMessages] = useState<GPTMessage[]>(props.messages || [{
         role: 'system',
         content: ''
     }]);
@@ -74,7 +74,7 @@ const Builder = () => {
             })}
             <div className="flex md:flex-row flex-col items-stretch justify-end gap-4 mt-10">
                 <Button type="button" onClick={addMessage} className="flex items-center gap-2"><PlusIcon width={"1rem"} /> Add Message</Button>
-                <SaveDialog messages={messages} />
+                <SaveDialog messages={messages} defaultName={props.name} defaultDescription={props.description} />
             </div>
         </div>
     );
@@ -137,11 +137,11 @@ const Connector = () => {
     )
 }
 
-const SaveDialog = ({ messages }: { messages: GPTMessage[] }) => {
+const SaveDialog = ({ messages, defaultName, defaultDescription }: { messages: GPTMessage[], defaultName?: string, defaultDescription?: string }) => {
     const router = useRouter();
     const [working, setWorking] = useState<boolean>(false);
-    const [name, setName] = useState<string>("");
-    const [description, setDescription] = useState<string>("");
+    const [name, setName] = useState<string>(defaultName || "");
+    const [description, setDescription] = useState<string>(defaultDescription || "");
 
     const saveForm = async () => {
         if (working) return;
@@ -162,10 +162,14 @@ const SaveDialog = ({ messages }: { messages: GPTMessage[] }) => {
         setWorking(false);
     }
 
+    const disableSave = useMemo(() => {
+        return working || messages.length < 1 || messages.filter((msg: GPTMessage) => msg.content.replace(/\s/g, '').length < 25).length > 0;
+    }, [messages, working]);
+
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button type="button" variant="secondary" className="flex items-center gap-2"><SaveIcon width={"1rem"} /> Save</Button>
+                <Button type="button" variant="secondary" className="flex items-center gap-2" disabled={disableSave}><SaveIcon width={"1rem"} /> Save</Button>
             </DialogTrigger>
             <DialogContent className="sm:max-w-[425px]">
                 <DialogHeader>
@@ -189,7 +193,7 @@ const SaveDialog = ({ messages }: { messages: GPTMessage[] }) => {
                     </div>
                 </div>
                 <DialogFooter>
-                    <Button disabled={working || messages.length < 1 || messages.filter((msg: GPTMessage) => msg.content.replace(/\s/g, '').length < 25).length > 0}
+                    <Button disabled={disableSave}
                         onClick={saveForm} type="button" variant="secondary" className="flex items-center gap-2">{working ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <CheckIcon width={"1rem"} />} Confirm</Button>
                 </DialogFooter>
             </DialogContent>
