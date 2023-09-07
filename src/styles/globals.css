@@ -186,7 +186,7 @@ li[data-type="error"] {
 }
 
 .msg pre {
-  @apply bg-black p-2 text-white rounded-md;
+  @apply bg-black p-2 text-white rounded-md overflow-auto;
 }
 
 .msg p {

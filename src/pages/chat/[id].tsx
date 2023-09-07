@@ -90,7 +90,7 @@ const ChatRoom = () => {
         <div className="flex flex-col transition-all gap-2">
             {messages.map((msg: Message, index: number) => {
                 return (
-                    <div key={`message-${index}`} className={`msg ${msg.role === 'user' ? `user` : `bot`}`}>
+                    <div key={`message-${index}`} className={`msg white ${msg.role === 'user' ? `user` : `bot`}`}>
                         <ReactMarkdown remarkPlugins={[remarkGfm, remarkSlug]}>
                             {msg.content}
                         </ReactMarkdown>
@@ -98,7 +98,7 @@ const ChatRoom = () => {
                 )
             })}
 
-            {working ? <div className="msg bot"><Loader2 className="h-[1.2rem] w-[1.2rem] animate-spin" /></div> : null}
+            {working ? <div key={`message-last`} className="msg bot p-2"><Loader2 className="h-[1.2rem] w-[1.2rem] animate-spin" /></div> : null}
 
             <div ref={dummyDiv}></div>
 
@@ -109,9 +109,6 @@ const ChatRoom = () => {
                     style={{ fontSize: "16px" }}
                     onChange={(event: any) => setText(event.target.value)}
                     onKeyDown={(event: any) => {
-                        if (event.keyCode == 13) {
-                            handleSubmit()
-                        }
                         if (event.keyCode == 13 && !event.shiftKey) {
                             handleSubmit()
                         }
