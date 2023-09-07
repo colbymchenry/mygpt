@@ -21,13 +21,13 @@ const EditBot = () => {
 
     useEffect(() => {
         init();
-    });
+    }, []);
 
     if (!doc) {
         return <div>Loading</div>
     }
 
-    return <Builder {...doc} />;
+    return <Builder {...doc} id={router.query.id} />;
 }
 
 export default EditBot;

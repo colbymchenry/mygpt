@@ -30,7 +30,7 @@ export function ApiProvider({ children }: any) {
             }
         })
         const query = parameterSlice.join("&");
-        return process.env.REACT_APP_API_URL + '/api/v1/' + url + (url.includes("?") ? "&" : "?") + query;
+        return url + (url.includes("?") ? "&" : "?") + query;
     }
 
     const functions = () => {
@@ -49,7 +49,7 @@ export function ApiProvider({ children }: any) {
             },
             post: async (url: string, payload: any, headers?: any, abortController?: AbortController) => {
                 let token = await user?.getIdToken();
-                return await axios.post(process.env.REACT_APP_API_URL + '/api/v1/' + url, payload, token ? {
+                return await axios.post(url, payload, token ? {
                     signal: abortController?.signal,
                     headers: {
                         ...(headers && { ...headers }),
@@ -61,7 +61,7 @@ export function ApiProvider({ children }: any) {
             },
             put: async (url: string, payload: any, headers?: any, abortController?: AbortController) => {
                 let token = await user?.getIdToken();
-                return await axios.put(process.env.REACT_APP_API_URL + '/api/v1/' + url, payload, token ? {
+                return await axios.put(url, payload, token ? {
                     signal: abortController?.signal,
                     headers: {
                         ...(headers && { ...headers }),

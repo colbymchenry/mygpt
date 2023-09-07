@@ -15,7 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
         <ApiProvider>
           <div className="flex flex-col">
             <Navbar />
-            <div className="page-width py-6">
+            <div className="page-width">
               <Head>
                 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
               </Head>

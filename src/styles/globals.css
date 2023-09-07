@@ -1,4 +1,33 @@
 @tailwind base;
+
+:root {
+  --scrollPrimary: transparent;
+  --scrollSecondary: rgb(195, 195, 196);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollSecondary) var(--scrollPrimary);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scrollPrimary);
+  border-radius: 5px;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scrollSecondary);
+  border-radius: 14px;
+  border: 3px solid var(--scrollPrimary);
+}
+
+
 @tailwind components;
 @tailwind utilities;
 
@@ -134,4 +163,16 @@ li[data-type="error"] {
   background-image: -webkit-linear-gradient(left , black 2%, #E6E6E6 50%, black 98%);
   background-image: -ms-linear-gradient(left , black 2%, #E6E6E6 50%, black 98%);
   background-image: -webkit-gradient( linear, left bottom, right bottom, color-stop(0.02, black), color-stop(0.5, gray), color-stop(0.98, black) );
+}
+
+.msg {
+  @apply p-2 rounded-md shadow-sm max-w-[80%] md:max-w-[60%] ;
+}
+
+.msg.user {
+  @apply bg-blue-600 text-white self-end;
+}
+
+.msg.bot {
+  @apply bg-gray-200 text-gray-800 dark:bg-gray-800 dark:text-gray-200 self-start;
 }

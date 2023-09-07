@@ -59,7 +59,7 @@ const Builder = (props: any) => {
     }
 
     return (
-        <div className="flex flex-col">
+        <div className="flex flex-col py-6">
             <div className="flex flex-col text-sm gap-2 mb-4">
                 <span><strong>assistant</strong>: Give example replies to your questions.</span>
                 <span><strong>system</strong>: Internally give some instructions for the conversation.</span>
@@ -74,7 +74,7 @@ const Builder = (props: any) => {
             })}
             <div className="flex md:flex-row flex-col items-stretch justify-end gap-4 mt-10">
                 <Button type="button" onClick={addMessage} className="flex items-center gap-2"><PlusIcon width={"1rem"} /> Add Message</Button>
-                <SaveDialog messages={messages} defaultName={props.name} defaultDescription={props.description} />
+                <SaveDialog messages={messages} defaultName={props.name} defaultDescription={props.description} id={props.id} />
             </div>
         </div>
     );
@@ -137,7 +137,7 @@ const Connector = () => {
     )
 }
 
-const SaveDialog = ({ messages, defaultName, defaultDescription }: { messages: GPTMessage[], defaultName?: string, defaultDescription?: string }) => {
+const SaveDialog = ({ messages, defaultName, defaultDescription, id }: { messages: GPTMessage[], defaultName?: string, defaultDescription?: string, id?: string }) => {
     const router = useRouter();
     const [working, setWorking] = useState<boolean>(false);
     const [name, setName] = useState<string>(defaultName || "");
@@ -148,11 +148,19 @@ const SaveDialog = ({ messages, defaultName, defaultDescription }: { messages: G
         setWorking(true);
 
         try {
-            await FirebaseUtils.createDocument("bots", {
-                messages,
-                name,
-                description
-            });
+            if (id) {
+                await FirebaseUtils.setDocument("bots", id, {
+                    messages,
+                    name,
+                    description
+                });
+            } else {
+                await FirebaseUtils.createDocument("bots", {
+                    messages,
+                    name,
+                    description
+                });
+            }
             toast.success('Bot configuration saved successfully!');
             router.push('/');
         } catch (error) {

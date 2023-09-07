@@ -6,7 +6,7 @@ import Link from "next/link";
 
 const Home = () => {
   return (
-    <div className="flex flex-col w-full gap-6 md:gap-12">
+    <div className="flex flex-col w-full gap-6 md:gap-12 py-6">
       <div className="flex flex-col md:flex-row w-full items-stretch justify-between gap-3">
         <div className="flex items-stretch gap-2 w-auto md:w-[30rem]">
           <Input placeholder="Search bots..." />
